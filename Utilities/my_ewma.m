@@ -30,6 +30,6 @@ for i = 1:length(sort_rt)
         ewma(end+1) = lambda*sort_correct(i) + (1-lambda)*ewma(end); 
     end
    
-    ci(1,i) = 0.5 + 1.5 * 0.5 * sqrt( (lambda/(2-lambda)) * (1-(1-lambda)^(2*i)) );        
-    ci(2,i) = 0.5 - 1.5 * 0.5 * sqrt( (lambda/(2-lambda)) * (1-(1-lambda)^(2*i)) );     
+    ci(1,i) = 0.5 + N * 0.5 * sqrt( (lambda/(2-lambda)) * (1-(1-lambda)^(2*i)) );        
+    ci(2,i) = 0.5 - N * 0.5 * sqrt( (lambda/(2-lambda)) * (1-(1-lambda)^(2*i)) );     
 end
