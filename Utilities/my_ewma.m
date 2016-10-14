@@ -1,4 +1,4 @@
-function [ewma, ci, sort_rt, sort_correct, sortinds] = my_ewma(rts, correct, lambda)
+function [ewma, ci, sort_rt, sort_correct, sortinds] = my_ewma(rts, correct, lambda, N)
 % function [ewma, ci, sort_rt] = my_ewma(rts,correct, lambda)
 %
 % Computes the "expontentially weighted moving average" according to the
@@ -12,11 +12,15 @@ function [ewma, ci, sort_rt, sort_correct, sortinds] = my_ewma(rts, correct, lam
 % response (1=correct; 0=incorrect).
 % lambda: "memory" of the moving average. Smaller values mean longer
 % memory; smoother curves and slower response to changes in performance.
+% N: number of standard deviations included in confidence interval
 %
 % ewma: exponentially weighted moving average
 % ci: confidence interval
 % sort_rt: sorted rts, sorted the same way as the ewma
 
+if nargin == 3
+    N = 3; % value in Rangel paper.
+end
 
 [sort_rt, sortinds] = sort(rts);
 sort_correct = correct(sortinds);
