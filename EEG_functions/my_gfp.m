@@ -1,4 +1,4 @@
-function gfp = my_gfp(eegdata, chandim, avref)
+function gfp = my_gfp(eegdata, chandim, chaninds, avref)
 % function gfp = my_gfp(eegdata, chandim, chaninds, avref)
 % 
 % Computes global field power as the standard deviation across electrodes.
@@ -21,11 +21,22 @@ if ~exist('chandim','var'),
     disp('Assuming that first dimension represents channels');
 end
 
-nchans = size(eegdata);
+% Remove the channels that are not in chaninds.
+eegsize = size(eegdata);
+for idim = 1:ndims(eegdata)
+   inds{idim} = 1:eegsize(idim); 
+end
+inds{chandim} = chaninds;
+eegdata = eegdata(inds{:});
 
 if exist('avref','var') && avref==1
+    nchans = size(eegdata, chandim);
     avgref = mean(eegdata, chandim);
-    avgref = repmat(avgref,nchans,1);
+    
+    repdims = ones(1,ndims(eegdata));
+    repdims(chandim) = size(eegdata,chandim);
+    
+    avgref = repmat(avgref,repdims);
     eegdata = eegdata - avgref;
 end    
 
