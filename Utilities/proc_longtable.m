@@ -48,16 +48,31 @@ end
 % table.
 for idv = 1:length(dvs)
     dv_data(idv,:) = LOG.(dvs{idv});
-end    
-    
+end
+
 
 % What are we interested in a "factor", e.g. scene category. A "condition"
 % is a specific factor level or a combination of levels of different
 % factors, e.g. "low memorability" AND "kitchen scene".
 for ifactor = 1:length(factors)
+    
+    %     isempty(cell2mat(factor_data{ifactor}))
+    
     factor_data{ifactor} = LOG.(factors{ifactor});
-    factor_level_names{ifactor} = unique(factor_data{ifactor});
-    factor_level_names{ifactor}(isnan(factor_level_names{ifactor})) = []; % remove nans
+    
+    if iscell(factor_data{ifactor})
+        factor_data{ifactor}(cellfun(@isempty, factor_data{ifactor})) = {inf};
+        factor_data{ifactor}(cellfun(@isnan, factor_data{ifactor})) = {inf};
+        
+        factor_level_names{ifactor} = unique(cell2mat(factor_data{ifactor}));
+    else
+        notnan = ~isnan(factor_data{ifactor}); 
+        factor_level_names{ifactor} = unique(factor_data{ifactor}(notnan));
+        
+    end
+    
+    %     factor_level_names{ifactor} = unique(factor_data{ifactor});
+    %     factor_level_names{ifactor}(isnan(factor_level_names{ifactor})) = []; % remove nans
     RES.factor_levels{ifactor} = factor_level_names{ifactor};
     factor_nlevels(ifactor) = length(factor_level_names{ifactor});
 end
@@ -135,6 +150,8 @@ for ifactor = 1:size(dsgn,2)
     
     if iscellstr(factor_var{ifactor})
         select_trials(:,ifactor) = strcmp(factor_var{ifactor}, this_factor_level);
+    elseif iscell(factor_var{ifactor})
+        select_trials(:,ifactor) = cell2mat(factor_var{ifactor}) == this_factor_level;
     else
         select_trials(:,ifactor) = factor_var{ifactor} == this_factor_level;
     end
