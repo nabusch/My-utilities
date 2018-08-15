@@ -13,8 +13,8 @@ function RES = proc_longtable(LOG, factors, dvs, case_var, stats)
 %           could be something else. E.G. each subject sees a images,
 %           and we want to know the performance for each image.
 % stats:    compute 'mean' or 'median' of the dependent variable. Default
-%           is mean.
-%           Note: use 'mean' for computing proportions, e.g. error rates.
+%           is mean. Note: if DV is zeros and ones, use 'mean' for
+%           computing proportions, e.g. error rates.
 %
 % OUTPUT:
 % RES: a struct with the results with the following field names:
