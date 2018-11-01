@@ -8,7 +8,7 @@ function [nrows, ncols] = my_subplotlayout(n)
 
 %%
 
-if isprime(n)
+if isprime(n) & n>3
     n = n+1;
 end
 
