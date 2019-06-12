@@ -62,9 +62,9 @@ for ifactor = 1:length(factors)
     
     if iscell(factor_data{ifactor})
         factor_data{ifactor}(cellfun(@isempty, factor_data{ifactor})) = {inf};
-        factor_data{ifactor}(cellfun(@isnan, factor_data{ifactor})) = {inf};
+%         factor_data{ifactor}(cellfun(@isnan, factor_data{ifactor}, 'UniformOutput', false)) = {inf};
         
-        factor_level_names{ifactor} = unique(cell2mat(factor_data{ifactor}));
+        factor_level_names{ifactor} = unique((factor_data{ifactor}));
     else
         notnan = ~isnan(factor_data{ifactor}); 
         factor_level_names{ifactor} = unique(factor_data{ifactor}(notnan));
