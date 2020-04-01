@@ -63,6 +63,8 @@ if strcmp(method, 'sub')
 	eegout = eegin - baseline;
 elseif strcmp(method, 'div')
 	eegout = eegin ./ baseline;
+elseif strcmp(method, 'db')
+	eegout = 10 .* log10(eegin ./ baseline);
 else
 	fprintf('\n\nunknown method - use `sub` or `div`\Å†\n')
 end

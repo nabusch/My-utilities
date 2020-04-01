@@ -1,5 +1,5 @@
 function mat2jasp(m, factornames, subjdim, filename, replacenans)
-% function mat2jasp(m, factornames, subjdim, filename)
+% function mat2jasp(m, factornames, subjdim, filename, replacenans)
 %
 % A function to write any matrix to a CSV file that JASP can understand.
 %
@@ -12,7 +12,7 @@ function mat2jasp(m, factornames, subjdim, filename, replacenans)
 % replacenans: replace missing values in the matrix with the average across
 % all subjects.
 %
-% Note: the number of factornames must be ndmis(m)-1!!!
+% Note: the number of factornames must be ndims(m)-1!!!
 
 
 % rearrange matrix in the requested way, so that subject dimension comes
@@ -49,7 +49,19 @@ elseif  factornames_length == sum(size(squeeze(mean(m,subjdim))))
         if icond < length(factorlevels)
             headstr = [headstr '; '];
         end
-    end    
+    end  
+    
+elseif factornames_length == prod(size(squeeze(mean(m,subjdim))))
+    for icond = 1:factornames_length
+        
+        headstr = [headstr factornames{icond}];
+        
+        if icond < length(factorlevels)
+            headstr = [headstr '; '];
+        end
+        
+    end
+
     
 else
     disp('The number of factor names is shit!')
