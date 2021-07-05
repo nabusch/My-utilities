@@ -1,4 +1,4 @@
-function RES = proc_longtable(LOG, factors, dvs, case_var, stats)
+function RES = proc_longtable(LOG, factors, dvs, case_var, stats, sat)
 
 % Extract data from a longtable in which each line is a single trial and
 % each column codes a variable.
@@ -15,6 +15,9 @@ function RES = proc_longtable(LOG, factors, dvs, case_var, stats)
 % stats:    compute 'mean' or 'median' of the dependent variable. Default
 %           is mean. Note: if DV is zeros and ones, use 'mean' for
 %           computing proportions, e.g. error rates.
+% sat:      compute a measure that compensates for speed-accuracy tradeoff
+%           (SAT). Requires two dvs: speed variable and accuracy variable.
+%           either "RCS" or "LISAS".
 %
 % OUTPUT:
 % RES: a struct with the results with the following field names:
@@ -32,6 +35,7 @@ function RES = proc_longtable(LOG, factors, dvs, case_var, stats)
 if nargin < 5
     stats = 'mean';
 end
+
 
 factors = makecell(factors);
 dvs = makecell(dvs);
@@ -128,13 +132,31 @@ for icondition = 1:size(dsgn,1)
                     res{idv}(idx{:}) = nanmean(dv_data(idv,case_trials));
                 case 'median'
                     res{idv}(idx{:}) = nanmedian(dv_data(idv,case_trials));
-            end
-            
+            end            
         end
+        
+        if nargin == 6 
+            
+            correct = (dv_data(2,case_trials));
+            rt      = dv_data(1,case_trials' & dv_data(2,:)==1);
+            errors = ~correct;
+            
+            switch sat
+                case {'rcs', 'RCS'}                    
+                    res{idv+1}(idx{:}) = res{2}(idx{:}) ./ res{1}(idx{:});    
+                case {'lisas', 'LISAS'}                    
+                    res{idv+1}(idx{:}) = nanmean(rt) + ( (nanstd(rt)/nanstd(errors) * nanmean(errors)));                    
+            end
+        end
+    
         
     end
 end
 
+
+if nargin == 6
+    dvs{end+1} = sat;
+end
 
 for idv = 1:length(dvs)
     RES.(dvs{idv}) = res{idv};
